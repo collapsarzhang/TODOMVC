@@ -1,0 +1,15 @@
+@import url(http://fonts.googleapis.com/css?family=Quattrocento:700);
+
+body {
+    background-color:#f8f8f8;
+    font-family: 'Quattrocento', serif;
+}
+
+.selected {
+    border:1px solid #ddd;
+}
+
+#todoapp .completed input.edit {
+    text-decoration: line-through;
+    cursor: default;
+}
