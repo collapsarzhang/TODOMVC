@@ -17,6 +17,18 @@ todomvc.config(function ($routeProvider) {
             templateUrl: 'views/todos.html',
             controller: 'TodoCtrl'
         })
+        .when('/active', {
+            templateUrl: 'views/todos.html',
+            controller: 'TodoCtrl'
+        })
+        .when('/completed', {
+            templateUrl: 'views/todos.html',
+            controller: 'TodoCtrl'
+        })
+        .when('/', {
+            templateUrl: 'views/todos.html',
+            controller: 'TodoCtrl'
+        })
         .when('/register', {
             templateUrl: 'views/register.html',
             controller: 'AuthCtrl'

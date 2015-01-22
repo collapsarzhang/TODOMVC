@@ -1,61 +1,28 @@
 'use strict';
 
 todomvc.controller('AuthCtrl',
-    function ($scope, $location, FIREBASE_URL) {
-        var ref = new Firebase(FIREBASE_URL);
-
-        if (ref.getAuth()) {
-            $location.path('/');
-        }
+    function ($scope, $location, Auth) {
 
         $scope.login = function () {
-            ref.authWithPassword({
-                email    : $scope.user.email,
-                password : $scope.user.password
-            }, function(error, authData) {
-                if (error) {
-                    console.log("Login Failed!", error);
-                    $scope.$apply(function() {
-                        $scope.error = error.toString();
-                    });
-                } else {
-                    console.log("Authenticated successfully with payload:", authData);
-                    $scope.$apply(function() {
-                        $location.path("/");
-                    });
-                }
+            Auth.login($scope.user).then(function(authData) {
+                // console.log("Logged in as:", authData.uid);
+                // do whatever you want if successfully login
+            }).catch(function(error) {
+                // console.error("Authentication failed:", error);
+                $scope.error = error.toString();
             });
         };
 
         $scope.register = function () {
-            ref.createUser({
-                email    : $scope.user.email,
-                password : $scope.user.password
-            }, function(error) {
-                if (error === null) {
-                    console.log("User created successfully");
-                    ref.authWithPassword({
-                        email    : $scope.user.email,
-                        password : $scope.user.password
-                    }, function(error, authData) {
-                        if (error) {
-                            console.log("Login Failed!", error);
-                            $scope.$apply(function() {
-                                $scope.error = error.toString();
-                            });
-                        } else {
-                            console.log("Authenticated successfully with payload:", authData);
-                            $scope.$apply(function() {
-                                $location.path("/");
-                            });
-                        }
-                    });
-                } else {
-                    console.log("Error creating user:", error);
-                    $scope.$apply(function() {
-                        $scope.error = error.toString();
-                    });
-                }
+            Auth.register($scope.user).then(function(userData) {
+                // console.log("User " + userData.uid + " created successfully!");
+                return Auth.login($scope.user);
+            }).then(function(authData) {
+                // console.log("Logged in as:", authData.uid);
+                // do whatever you want if successfully register and login
+            }).catch(function(error) {
+                // console.error("Error: ", error);
+                $scope.error = error.toString();
             });
         };
 

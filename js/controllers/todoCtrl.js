@@ -6,15 +6,14 @@
  * - retrieves and persists the model via the $firebase service
  * - exposes the model to the template and provides event handlers
  */
-todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase) {
-	var url = 'https://brilliant-inferno-2120.firebaseio.com/';
-	var fireRef = new Firebase(url);
+todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, FIREBASE_URL) {
+	var fireRef = new Firebase(FIREBASE_URL);
+    $scope.todos = $firebase(fireRef).$asArray();
 
 	$scope.$watch('todos', function () {
 		var total = 0;
 		var remaining = 0;
-		$scope.todos.$getIndex().forEach(function (index) {
-			var todo = $scope.todos[index];
+        angular.forEach($scope.todos, function (todo) {
 			// Skip invalid entries so they don't break the entire app.
 			if (!todo || !todo.title) {
 				return;
@@ -31,59 +30,60 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase) {
 		$scope.allChecked = remaining === 0;
 	}, true);
 
+
 	$scope.addTodo = function () {
 		var newTodo = $scope.newTodo.trim();
 		if (!newTodo.length) {
 			return;
 		}
-		$scope.todos.$add({
-			title: newTodo,
-			completed: false
-		});
+
+        $scope.todos.$add({
+            title: newTodo,
+            completed: false
+        });
 		$scope.newTodo = '';
 	};
 
-	$scope.editTodo = function (id) {
-		$scope.editedTodo = $scope.todos[id];
+	$scope.editTodo = function (todo) {
+		$scope.editedTodo = todo;
 		$scope.originalTodo = angular.extend({}, $scope.editedTodo);
 	};
 
-	$scope.doneEditing = function (id) {
+	$scope.doneEditing = function (todo) {
 		$scope.editedTodo = null;
-		var title = $scope.todos[id].title.trim();
+		var title = todo.title.trim();
 		if (title) {
-			$scope.todos.$save(id);
+			$scope.todos.$save(todo);
 		} else {
-			$scope.removeTodo(id);
+			$scope.removeTodo(todo);
 		}
 	};
 
-	$scope.revertEditing = function (id) {
-		$scope.todos[id] = $scope.originalTodo;
-		$scope.doneEditing(id);
+	$scope.revertEditing = function (todo) {
+        todo = $scope.originalTodo;
+		$scope.doneEditing(todo);
 	};
 
-	$scope.removeTodo = function (id) {
-		$scope.todos.$remove(id);
+	$scope.removeTodo = function (todo) {
+		$scope.todos.$remove(todo);
 	};
 
-	$scope.toggleCompleted = function (id) {
-		var todo = $scope.todos[id];
+	$scope.toggleCompleted = function (todo) {
 		todo.completed = !todo.completed;
-		$scope.todos.$save(id);
+		$scope.todos.$save(todo);
 	};
 
 	$scope.clearCompletedTodos = function () {
-		angular.forEach($scope.todos.$getIndex(), function (index) {
-			if ($scope.todos[index].completed) {
-				$scope.todos.$remove(index);
+		angular.forEach($scope.todos, function (todo) {
+			if (todo.completed) {
+				$scope.todos.$remove(todo);
 			}
 		});
 	};
 
 	$scope.markAll = function (allCompleted) {
-		angular.forEach($scope.todos.$getIndex(), function (index) {
-			$scope.todos[index].completed = !allCompleted;
+		angular.forEach($scope.todos, function (todo) {
+			todo.completed = !allCompleted;
 		});
 		$scope.todos.$save();
 	};
@@ -96,6 +96,5 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase) {
 	}
 	$scope.location = $location;
 
-	// Bind the todos to the firebase provider.
-	$scope.todos = $firebase(fireRef);
+
 });
