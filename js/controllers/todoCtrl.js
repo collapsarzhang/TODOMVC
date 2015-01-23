@@ -84,8 +84,9 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, F
 	$scope.markAll = function (allCompleted) {
 		angular.forEach($scope.todos, function (todo) {
 			todo.completed = !allCompleted;
+            $scope.todos.$save(todo);
 		});
-		$scope.todos.$save();
+
 	};
 
 	$scope.newTodo = '';
