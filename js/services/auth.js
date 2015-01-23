@@ -12,6 +12,9 @@ todomvc.factory('Auth',
             signedIn: function () {
                 return authObj.$getAuth();
             },
+            getCurrent: function () {
+                return $rootScope.currentUser;
+            },
             login: function (user) {
                 return authObj.$authWithPassword(user);
             },
@@ -22,8 +25,10 @@ todomvc.factory('Auth',
 
         authObj.$onAuth(function(authData) {
             if (authData) {
+                $rootScope.currentUser = authData.uid;
                 $location.path('/');
             } else {
+                delete $rootScope.currentUser;
                 $location.path('/');
             }
         });
