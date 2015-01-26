@@ -8,7 +8,7 @@
  */
 todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, FIREBASE_URL, Auth) {
 	var fireRef = new Firebase(FIREBASE_URL + Auth.getCurrent());
-    $scope.todos = $firebase(fireRef).$asArray();
+
 
 	$scope.$watch('todos', function () {
 		var total = 0;
@@ -46,42 +46,49 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, F
         }
 	};
 
-	$scope.editTodo = function (todo) {
+	$scope.editTodo = function (id) {
         if (Auth.signedIn()) {
-            $scope.editedTodo = todo;
+            var index = $scope.todos.$indexFor(id);
+            $scope.editedTodo = $scope.todos[index];
             $scope.originalTodo = angular.extend({}, $scope.editedTodo);
+
         }
 	};
 
-	$scope.doneEditing = function (todo) {
+	$scope.doneEditing = function (id) {
         if (Auth.signedIn()) {
+            var index = $scope.todos.$indexFor(id);
             $scope.editedTodo = null;
-            var title = todo.title.trim();
+            var title = $scope.todos[index].title.trim();
             if (title) {
-                $scope.todos.$save(todo);
+                $scope.todos.$save(index);
             } else {
-                $scope.removeTodo(todo);
+                $scope.removeTodo(index);
             }
+
         }
 	};
 
-	$scope.revertEditing = function (todo) {
+	$scope.revertEditing = function (id) {
         if (Auth.signedIn()) {
-            todo = $scope.originalTodo;
-            $scope.doneEditing(todo);
+            var index = $scope.todos.$indexFor(id);
+            $scope.todos[index] = $scope.originalTodo;
+            $scope.doneEditing(id);
         }
 	};
 
-	$scope.removeTodo = function (todo) {
+	$scope.removeTodo = function (id) {
         if (Auth.signedIn()) {
-            $scope.todos.$remove(todo);
+            var index = $scope.todos.$indexFor(id);
+            $scope.todos.$remove(index);
         }
 	};
 
-	$scope.toggleCompleted = function (todo) {
+	$scope.toggleCompleted = function (id) {
         if (Auth.signedIn()) {
-            todo.completed = !todo.completed;
-            $scope.todos.$save(todo);
+            var index = $scope.todos.$indexFor(id);
+            $scope.todos[index].completed = !$scope.todos[index].completed;
+            $scope.todos.$save(index);
         }
 	};
 
@@ -112,5 +119,5 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, F
 	}
 	$scope.location = $location;
 
-
+    $scope.todos = $firebase(fireRef).$asArray();
 });
