@@ -1,8 +1,6 @@
 # Firebase & AngularJS TodoMVC Example
 
-> Firebase is a scalable realtime backend that lets you build apps fast without managing servers.
-
-> _[Firebase - firebase.com](https://www.firebase.com)_
+> [Working Sample](http://collapsarzhang.github.io/TodoMVC/)
 
 
 ## Learning Firebase
