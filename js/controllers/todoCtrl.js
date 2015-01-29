@@ -58,21 +58,20 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, F
 	$scope.doneEditing = function (id) {
         if (Auth.signedIn()) {
             var index = $scope.todos.$indexFor(id);
-            $scope.editedTodo = null;
             var title = $scope.todos[index].title.trim();
+            console.log(title);
             if (title) {
                 $scope.todos.$save(index);
             } else {
-                $scope.removeTodo(index);
+                $scope.removeTodo(id);
             }
-
         }
 	};
 
 	$scope.revertEditing = function (id) {
         if (Auth.signedIn()) {
             var index = $scope.todos.$indexFor(id);
-            $scope.todos[index] = $scope.originalTodo;
+            $scope.todos[index].title = $scope.originalTodo.title;
             $scope.doneEditing(id);
         }
 	};
