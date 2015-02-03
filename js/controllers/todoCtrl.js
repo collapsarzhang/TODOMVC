@@ -6,9 +6,8 @@
  * - retrieves and persists the model via the $firebase service
  * - exposes the model to the template and provides event handlers
  */
-todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, FIREBASE_URL, Auth) {
+todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, $firebase, FIREBASE_URL, Auth, $idle) {
 	var fireRef = new Firebase(FIREBASE_URL + Auth.getCurrent());
-
 
 	$scope.$watch('todos', function () {
 		var total = 0;

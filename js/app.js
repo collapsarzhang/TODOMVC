@@ -7,9 +7,37 @@
  *
  * @type {angular.Module}
  */
-var todomvc = angular.module('todomvc', ['firebase', 'ngRoute', 'ui.bootstrap']);
+var todomvc = angular.module('todomvc', ['firebase', 'ngRoute', 'ui.bootstrap', 'ngIdle']);
 
 todomvc.constant('FIREBASE_URL', 'https://brilliant-inferno-2120.firebaseio.com/');
+
+todomvc.config(['$keepaliveProvider', '$idleProvider', function($keepaliveProvider, $idleProvider) {
+    $idleProvider.idleDuration(5);
+    $idleProvider.warningDuration(20);
+    $keepaliveProvider.interval(10);
+}]);
+
+todomvc.run(['$idle', function($idle) {
+    $idle.watch();
+}]);
+
+todomvc.run(function($rootScope, $location, Auth) {
+    var routesThatShouldNotReachAfterAuth = ['/login', '/register'];
+
+    $rootScope.$on('$routeChangeStart', function(event, next, current) {
+        if(_(routesThatShouldNotReachAfterAuth).contains($location.path()) && Auth.signedIn()) {
+            $location.path('/');
+        }
+    });
+
+    var routesThatShouldNotReachBeforeAuth = ['/logout', '/'];
+
+    $rootScope.$on('$routeChangeStart', function(event, next, current) {
+        if(_(routesThatShouldNotReachBeforeAuth).contains($location.path()) && !Auth.signedIn()) {
+            $location.path('/login');
+        }
+    });
+});
 
 todomvc.config(function ($routeProvider) {
     $routeProvider

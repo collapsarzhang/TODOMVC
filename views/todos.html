@@ -2,7 +2,7 @@
     <p class="lead">AngularJS + Bootstrap 3</p>
 </h1>
 
-<div id="todoapp" ng-show="signedIn()" ng-cloak>
+<div id="todoapp" ng-cloak>
 
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
@@ -27,7 +27,7 @@
                     <input class="toggle" type="checkbox" ng-model="todo.completed" ng-change="todos.$save(todo)">
                   </span>
                 <form todo-submit="doneEditing(todo.$id)">
-                    <input class="edit form-control input-lg" ng-disabled="todo.completed" ng-click="editTodo(todo.$id)" ng-trim="false" ng-model="todo.title" ng-blur="doneEditing(todo.$id)" todo-escape="revertEditing(todo.$id)">
+                    <input class="edit form-control input-lg" ng-disabled="todo.completed" ng-click="editTodo(todo.$id)" ng-trim="false" ng-model="todo.title" todo-escape="revertEditing(todo.$id)">
                 </form>
                   <span class="input-group-btn">
                     <button class="btn btn-default btn-lg destroy" ng-click="removeTodo(todo.$id)"><i class="glyphicon glyphicon-remove"></i></button>
@@ -82,10 +82,4 @@
             <button class="btn btn-sm btn-success" id="clear-completed" ng-click="clearCompletedTodos()" ng-show="completedCount">Clear completed ({{completedCount}})</button>
         </div>
     </div><!--/ row -->
-</div>
-
-<div ng-hide="signedIn()" ng-cloak>
-    <h1 class="text-center">
-        <p class="lead">Please register or sign in first</p>
-    </h1>
 </div>
