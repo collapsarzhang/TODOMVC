@@ -31,7 +31,7 @@ todomvc.factory('Auth',
             if (authData) {
                 $location.path('/');
             } else {
-                $location.path('/');
+                $location.path('/login');
             }
         });
 
